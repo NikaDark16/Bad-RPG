@@ -27,3 +27,6 @@ func apply_friction(amount):
 func apply_movement(acceleration):
 	motion += acceleration
 	motion = motion.clamped(MAX_SPEED)
+
+func _on_Area2D_body_exited(body):
+	print(body.name)
