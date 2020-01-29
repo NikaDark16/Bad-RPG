@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://game/objects/enemy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://game/scripts/game.gd" type="Script" id=1]
 [ext_resource path="res://game/sprites/wall.png" type="Texture" id=2]
 [ext_resource path="res://game/objects/player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/scripts/spawner.gd" type="Script" id=4]
+[ext_resource path="res://game/scripts/window_dialog.gd" type="Script" id=5]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 0, 0, 64, 0, 64, 64, 0, 64 )
@@ -26,18 +28,7 @@ points = PoolVector2Array( 0, 0, 64, 0, 64, 64, 0, 64 )
 0/z_index = 0
 
 [node name="Game" type="Node2D"]
-
-[node name="Enemy" parent="." instance=ExtResource( 1 )]
-position = Vector2( 287.628, 267.391 )
-
-[node name="Enemy2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 233.65, 370.55 )
-
-[node name="Enemy3" parent="." instance=ExtResource( 1 )]
-position = Vector2( 431.25, 379.1 )
-
-[node name="Enemy4" parent="." instance=ExtResource( 1 )]
-position = Vector2( 663.05, 320.2 )
+script = ExtResource( 1 )
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource( 2 )
@@ -45,5 +36,60 @@ collision_use_kinematic = true
 format = 1
 tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 0, 0, 7, 0, 0, 8, 0, 0, 9, 0, 0, 10, 0, 0, 11, 0, 0, 12, 0, 0, 13, 0, 0, 14, 0, 0, 15, 0, 0, 65536, 0, 0, 65551, 0, 0, 131072, 0, 0, 131087, 0, 0, 196608, 0, 0, 196623, 0, 0, 262144, 0, 0, 262159, 0, 0, 327680, 0, 0, 327695, 0, 0, 393216, 0, 0, 393231, 0, 0, 458752, 0, 0, 458767, 0, 0, 524288, 0, 0, 524303, 0, 0, 589824, 0, 0, 589825, 0, 0, 589826, 0, 0, 589827, 0, 0, 589828, 0, 0, 589829, 0, 0, 589830, 0, 0, 589831, 0, 0, 589832, 0, 0, 589833, 0, 0, 589834, 0, 0, 589835, 0, 0, 589836, 0, 0, 589837, 0, 0, 589838, 0, 0, 589839, 0, 0 )
 
-[node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( 117.378, 110.732 )
+[node name="Player" parent="." groups=[
+"player",
+] instance=ExtResource( 3 )]
+position = Vector2( 209.347, 142.091 )
+
+[node name="Spawner" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[node name="WindowDialog" type="WindowDialog" parent="."]
+editor/display_folded = true
+margin_left = 383.0
+margin_top = 269.0
+margin_right = 645.0
+margin_bottom = 336.0
+window_title = "You died"
+script = ExtResource( 5 )
+
+[node name="MarginContainer" type="MarginContainer" parent="WindowDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = -5.0
+margin_bottom = -1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowDialog/MarginContainer"]
+margin_right = 252.0
+margin_bottom = 61.0
+
+[node name="Label" type="Label" parent="WindowDialog/MarginContainer/VBoxContainer"]
+margin_right = 252.0
+margin_bottom = 14.0
+size_flags_vertical = 2
+text = "Do you want to try again?"
+align = 1
+valign = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/MarginContainer/VBoxContainer"]
+margin_top = 41.0
+margin_right = 252.0
+margin_bottom = 61.0
+
+[node name="ButtonYes" type="Button" parent="WindowDialog/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 124.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Yes"
+
+[node name="ButtonNo" type="Button" parent="WindowDialog/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 128.0
+margin_right = 252.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "No"
+[connection signal="die" from="Player" to="." method="_on_Player_die"]
+[connection signal="button_down" from="WindowDialog/MarginContainer/VBoxContainer/HBoxContainer/ButtonYes" to="." method="_on_ButtonYes_button_down"]
+[connection signal="button_down" from="WindowDialog/MarginContainer/VBoxContainer/HBoxContainer/ButtonNo" to="." method="_on_ButtonNo_button_down"]

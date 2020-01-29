@@ -3,6 +3,7 @@ extends RigidBody2D
 var MAX_SPEED = 500
 var ACCELERATION = 2000
 var motion = Vector2()
+var damage = 1
 
 func _physics_process(delta):
 	apply_impulse(Vector2(0, 0), motion.normalized()*ACCELERATION*delta)
@@ -15,4 +16,4 @@ func _on_Timer_timeout():
 
 func _on_Enemy_body_exited(body):
 	if body.name == "Player":
-		print("You died")
+		body.get_damage(damage)
